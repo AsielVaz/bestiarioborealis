@@ -18,7 +18,7 @@ class BestiaryEntryController extends Controller
     public function index(Request $request)
     {
         return BestiaryEntry::with(['dossierTheme', 'subtitles', 'affinities', 'stats'])
-            ->when(! $request->user()->hasRole('admin'), fn ($query) => $query->where('user_id', $request->user()->id))
+            ->where('user_id', $request->user()->id)
             ->when($request->search, fn ($q, $search) => $q->where('title', 'like', "%{$search}%"))
             ->latest()
             ->paginate(25);
@@ -61,6 +61,6 @@ class BestiaryEntryController extends Controller
 
     private function authorizeEntry(BestiaryEntry $entry): void
     {
-        abort_unless(request()->user()->id === $entry->user_id || request()->user()->hasRole('admin'), 403);
+        abort_unless(request()->user()->id === $entry->user_id, 403);
     }
 }

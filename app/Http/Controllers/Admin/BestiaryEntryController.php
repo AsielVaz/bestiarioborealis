@@ -20,6 +20,7 @@ class BestiaryEntryController extends Controller
     {
         $entries = BestiaryEntry::query()
             ->with('dossierTheme')
+            ->where('user_id', $request->user()->id)
             ->when($request->search, fn ($q, $search) => $q->where('title', 'like', "%{$search}%"))
             ->when($request->classification, fn ($q, $value) => $q->where('classification', $value))
             ->when($request->category, fn ($q, $value) => $q->where('category', $value))
@@ -47,6 +48,8 @@ class BestiaryEntryController extends Controller
 
     public function show(BestiaryEntry $entry)
     {
+        $this->authorizeEntry($entry);
+
         $entry->load(['dossierTheme', 'origin', 'subtitles', 'affinities', 'habitats', 'behaviors', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes']);
 
         return view('admin.entries.show', compact('entry'));
@@ -54,6 +57,8 @@ class BestiaryEntryController extends Controller
 
     public function edit(BestiaryEntry $entry)
     {
+        $this->authorizeEntry($entry);
+
         $entry->load(['origin', 'subtitles', 'affinities', 'habitats', 'behaviors', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes']);
 
         return view('admin.entries.edit', ['entry' => $entry, 'themes' => DossierTheme::where('is_active', true)->orderBy('name')->get()]);
@@ -61,6 +66,8 @@ class BestiaryEntryController extends Controller
 
     public function update(UpdateBestiaryEntryRequest $request, BestiaryEntry $entry)
     {
+        $this->authorizeEntry($entry);
+
         $this->entries->updateFromRequest($request, $entry);
 
         return redirect()->route('entries.show', $entry)->with('status', 'Ficha actualizada.');
@@ -68,8 +75,15 @@ class BestiaryEntryController extends Controller
 
     public function destroy(BestiaryEntry $entry)
     {
+        $this->authorizeEntry($entry);
+
         $entry->delete();
 
         return redirect()->route('entries.index')->with('status', 'Ficha archivada.');
+    }
+
+    private function authorizeEntry(BestiaryEntry $entry): void
+    {
+        abort_unless(request()->user()->id === $entry->user_id, 403);
     }
 }

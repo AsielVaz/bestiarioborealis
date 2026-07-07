@@ -2,11 +2,11 @@
 
 Usa esta especificacion para conectar la app movil con el backend Laravel alojado en:
 
-`https://bestiarioborealis.lat/bestiario`
+`https://bestiarioborealis.lat/bestiario/public`
 
 Base API:
 
-`https://bestiarioborealis.lat/bestiario/api`
+`https://bestiarioborealis.lat/bestiario/public/api`
 
 Todas las rutas protegidas usan Sanctum con header:
 
@@ -221,7 +221,7 @@ Uso recomendado:
 
 `POST /sync/creatures/upsert`
 
-Body minimo:
+Body completo recomendado:
 
 ```json
 {
@@ -272,6 +272,8 @@ Body minimo:
   }
 }
 ```
+
+El contrato completo de campos soportados esta en `docs/mobile-entry-upsert-format.md`.
 
 Respuesta `200` o `201`:
 

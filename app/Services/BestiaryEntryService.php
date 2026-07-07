@@ -37,7 +37,9 @@ class BestiaryEntryService
 
     public function createFromJson(array $payload, ?int $userId = null): BestiaryEntry
     {
+        $sourcePayload = $payload;
         $payload = $this->normalizePayload($payload);
+        $payload['source_payload'] = $sourcePayload;
 
         return $this->persist($payload, new BestiaryEntry(), $userId);
     }
@@ -67,6 +69,7 @@ class BestiaryEntryService
             'published_at' => $entry->published_at?->toISOString(),
             'updated_at' => $entry->updated_at?->toISOString(),
             'last_synced_at' => $entry->last_synced_at?->toISOString(),
+            'source_payload' => $entry->source_payload,
             'origin' => $entry->origin?->only(['universe', 'game', 'campaign', 'source', 'region']),
             'subtitles' => $entry->subtitles->pluck('value')->values(),
             'affinities' => $entry->affinities->pluck('value')->values(),
@@ -94,7 +97,7 @@ class BestiaryEntryService
                 'title', 'slug', 'sync_uid', 'classification', 'category', 'threat_level', 'height',
                 'description', 'last_record', 'status', 'final_combat_scenario',
                 'main_image_path', 'primary_color', 'accent_color', 'parchment_tone',
-                'frame_style', 'published_at',
+                'frame_style', 'published_at', 'source_payload',
             ]));
 
             $entry->slug = $entry->slug ?: $this->uniqueSlug($payload['title'], $entry->id);
@@ -128,12 +131,14 @@ class BestiaryEntryService
 
     public function upsertForSync(array $payload, int $userId, string $creatureUid): BestiaryEntry
     {
+        $sourcePayload = $payload;
         $entry = BestiaryEntry::where('user_id', $userId)
             ->where('sync_uid', $creatureUid)
             ->first() ?? new BestiaryEntry();
 
         $payload = $this->normalizePayload($payload);
         $payload['sync_uid'] = $creatureUid;
+        $payload['source_payload'] = $sourcePayload;
 
         return $this->persist($payload, $entry, $userId);
     }

@@ -68,7 +68,7 @@ Todas las rutas usan `auth:sanctum`.
 
 Base esperada en produccion:
 
-`https://bestiarioborealis.lat/bestiario/api`
+`https://bestiarioborealis.lat/bestiario/public/api`
 
 - `GET /api/entries`
 - `POST /api/entries`
@@ -85,6 +85,10 @@ Base esperada en produccion:
 El manual pegable para el equipo del app movil esta en:
 
 `docs/mobile-sync-api-prompt.md`
+
+El formato completo para enviar fichas desde la app movil esta en:
+
+`docs/mobile-entry-upsert-format.md`
 
 Incluye registro/login por token, verificacion por `account_id + creature_uid`, diff de criaturas locales/remotas y upsert desde el dispositivo.
 

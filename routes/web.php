@@ -11,10 +11,10 @@ use App\Http\Controllers\PublicEntryController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
-Route::get('/bestiary/{slug}', [PublicEntryController::class, 'show'])->name('public.entries.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/bestiary/{slug}', [PublicEntryController::class, 'show'])->name('public.entries.show');
 
     Route::resource('entries', BestiaryEntryController::class);
     Route::resource('themes', DossierThemeController::class)->except('show');

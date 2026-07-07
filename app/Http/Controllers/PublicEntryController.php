@@ -13,6 +13,8 @@ class PublicEntryController extends Controller
             ->whereNotNull('published_at')
             ->firstOrFail();
 
+        abort_unless(request()->user()->id === $entry->user_id, 403);
+
         return view('public.entry', compact('entry'));
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportBestiaryJsonRequest;
-use App\Models\BestiaryEntry;
 use App\Services\BestiaryEntryService;
 
 class JsonImportController extends Controller
@@ -23,6 +22,8 @@ class JsonImportController extends Controller
 
     public function catalog(BestiaryEntryService $entries)
     {
-        return response()->json(BestiaryEntry::all()->map(fn ($entry) => $entries->exportToJson($entry)));
+        return response()->json(
+            request()->user()->bestiaryEntries()->get()->map(fn ($entry) => $entries->exportToJson($entry))
+        );
     }
 }

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'user_id', 'dossier_theme_id', 'title', 'slug', 'classification', 'category',
     'sync_uid', 'threat_level', 'height', 'description', 'last_record', 'status',
     'final_combat_scenario', 'main_image_path', 'primary_color', 'accent_color',
-    'parchment_tone', 'frame_style', 'published_at', 'last_synced_at',
+    'parchment_tone', 'frame_style', 'published_at', 'last_synced_at', 'source_payload',
 ])]
 class BestiaryEntry extends Model
 {
@@ -26,6 +26,7 @@ class BestiaryEntry extends Model
         return [
             'published_at' => 'datetime',
             'last_synced_at' => 'datetime',
+            'source_payload' => 'array',
         ];
     }
 
