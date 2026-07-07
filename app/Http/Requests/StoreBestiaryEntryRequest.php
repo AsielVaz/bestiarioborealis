@@ -11,15 +11,54 @@ class StoreBestiaryEntryRequest extends FormRequest
     {
         foreach (['subtitles', 'affinities', 'habitats', 'behaviors'] as $field) {
             if (is_string($this->input($field))) {
-                $this->merge([$field => collect(preg_split('/\R/', $this->input($field)))->filter()->values()->all()]);
+                $this->merge([$field => $this->parseStringList($this->input($field))]);
             }
         }
 
         foreach (['weaknesses' => 'description', 'scholar_notes' => 'note'] as $field => $key) {
             if (is_string($this->input($field))) {
-                $this->merge([$field => collect(preg_split('/\R/', $this->input($field)))->filter()->map(fn ($value) => [$key => $value])->values()->all()]);
+                $this->merge([$field => $this->parseObjectList($this->input($field), $key)]);
             }
         }
+
+        foreach (['abilities', 'techniques', 'loot', 'stats', 'vignettes'] as $field) {
+            if (is_string($this->input($field))) {
+                $this->merge([$field => $this->parseJsonList($this->input($field))]);
+            }
+        }
+    }
+
+    private function parseStringList(string $value): array
+    {
+        $value = trim($value);
+
+        if (str_starts_with($value, '[')) {
+            return json_decode($value, true) ?: [];
+        }
+
+        return collect(preg_split('/\R/', $value))->filter()->values()->all();
+    }
+
+    private function parseObjectList(string $value, string $key): array
+    {
+        $value = trim($value);
+
+        if (str_starts_with($value, '[')) {
+            return json_decode($value, true) ?: [];
+        }
+
+        return collect(preg_split('/\R/', $value))
+            ->filter()
+            ->map(fn ($line) => [$key => $line])
+            ->values()
+            ->all();
+    }
+
+    private function parseJsonList(string $value): array
+    {
+        $value = trim($value);
+
+        return $value === '' ? [] : (json_decode($value, true) ?: []);
     }
 
     /**

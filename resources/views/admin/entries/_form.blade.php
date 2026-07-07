@@ -1,4 +1,32 @@
-@php($entry = $entry ?? null)
+@php
+    $entry = $entry ?? null;
+    $lineValue = function (string $name, string $relation, string $field = 'value') use ($entry) {
+        $old = old($name);
+        if (is_array($old)) {
+            return collect($old)->map(fn ($item) => is_array($item) ? ($item[$field] ?? '') : $item)->filter()->implode("\n");
+        }
+
+        if (is_string($old)) {
+            return $old;
+        }
+
+        return $entry?->{$relation}?->pluck($field)->implode("\n") ?? '';
+    };
+    $jsonValue = function (string $name, string $relation, array $fields) use ($entry) {
+        $old = old($name);
+        if (is_string($old)) {
+            return $old;
+        }
+
+        $items = is_array($old)
+            ? collect($old)
+            : ($entry?->{$relation} ?? collect());
+
+        return $items->map(fn ($item) => collect($fields)->mapWithKeys(fn ($field) => [$field => is_array($item) ? ($item[$field] ?? null) : $item->{$field}])->filter(fn ($value) => $value !== null && $value !== '')->all())
+            ->values()
+            ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    };
+@endphp
 <div class="grid gap-4 lg:grid-cols-2">
     <section class="arcane-card rounded-lg p-5">
         <h3 class="mb-4 font-semibold text-amber-200">Identificacion</h3>
@@ -27,17 +55,42 @@
             <input name="origin[universe]" value="{{ old('origin.universe', $entry?->origin?->universe) }}" placeholder="Universo" class="rounded border-stone-700 bg-stone-900">
             <input name="origin[game]" value="{{ old('origin.game', $entry?->origin?->game) }}" placeholder="Juego" class="rounded border-stone-700 bg-stone-900">
             <input name="origin[campaign]" value="{{ old('origin.campaign', $entry?->origin?->campaign) }}" placeholder="Campana" class="rounded border-stone-700 bg-stone-900">
+            <input name="origin[source]" value="{{ old('origin.source', $entry?->origin?->source) }}" placeholder="Fuente" class="rounded border-stone-700 bg-stone-900">
+            <input name="origin[region]" value="{{ old('origin.region', $entry?->origin?->region) }}" placeholder="Region" class="rounded border-stone-700 bg-stone-900">
             <textarea name="last_record" rows="3" placeholder="Ultimo registro" class="rounded border-stone-700 bg-stone-900">{{ old('last_record', $entry?->last_record) }}</textarea>
         </div>
     </section>
     <section class="arcane-card rounded-lg p-5 lg:col-span-2">
-        <h3 class="mb-4 font-semibold text-amber-200">Listas ordenadas</h3>
+        <h3 class="mb-4 font-semibold text-amber-200">Rasgos y comportamiento</h3>
         <div class="grid gap-4 md:grid-cols-3">
-            @foreach(['subtitles' => 'Subtitulos', 'affinities' => 'Afinidades', 'habitats' => 'Habitats', 'behaviors' => 'Comportamientos', 'weaknesses' => 'Debilidades', 'scholar_notes' => 'Notas del erudito'] as $name => $label)
-                <textarea name="{{ $name }}" rows="4" placeholder="{{ $label }}: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ old($name) }}</textarea>
-            @endforeach
+            <textarea name="subtitles" rows="4" placeholder="Subtitulos: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('subtitles', 'subtitles') }}</textarea>
+            <textarea name="affinities" rows="4" placeholder="Afinidades: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('affinities', 'affinities') }}</textarea>
+            <textarea name="habitats" rows="4" placeholder="Habitats: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('habitats', 'habitats') }}</textarea>
+            <textarea name="behaviors" rows="4" placeholder="Comportamientos: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('behaviors', 'behaviors') }}</textarea>
+            <textarea name="weaknesses" rows="4" placeholder="Debilidades: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('weaknesses', 'weaknesses', 'description') }}</textarea>
+            <textarea name="scholar_notes" rows="4" placeholder="Notas del erudito: una linea por elemento" class="rounded border-stone-700 bg-stone-900">{{ $lineValue('scholar_notes', 'scholarNotes', 'note') }}</textarea>
         </div>
-        <p class="mt-3 text-sm text-stone-500">Para habilidades, tecnicas, loot, estadisticas y vinetas puedes importar JSON completo desde la pantalla de importacion.</p>
+    </section>
+    <section class="arcane-card rounded-lg p-5 lg:col-span-2">
+        <h3 class="mb-4 font-semibold text-amber-200">Secciones estructuradas</h3>
+        <p class="mb-4 text-sm text-stone-400">Edita estas secciones como JSON. El formato es el mismo que usa la app movil.</p>
+        <div class="grid gap-4 lg:grid-cols-2">
+            <label class="grid gap-2 text-sm text-stone-300">Habilidades
+                <textarea name="abilities" rows="9" class="rounded border-stone-700 bg-stone-900 font-mono text-xs">{{ $jsonValue('abilities', 'abilities', ['name', 'description']) }}</textarea>
+            </label>
+            <label class="grid gap-2 text-sm text-stone-300">Tecnicas
+                <textarea name="techniques" rows="9" class="rounded border-stone-700 bg-stone-900 font-mono text-xs">{{ $jsonValue('techniques', 'techniques', ['name', 'description']) }}</textarea>
+            </label>
+            <label class="grid gap-2 text-sm text-stone-300">Loot
+                <textarea name="loot" rows="9" class="rounded border-stone-700 bg-stone-900 font-mono text-xs">{{ $jsonValue('loot', 'loot', ['name', 'description', 'rarity']) }}</textarea>
+            </label>
+            <label class="grid gap-2 text-sm text-stone-300">Estadisticas
+                <textarea name="stats" rows="9" class="rounded border-stone-700 bg-stone-900 font-mono text-xs">{{ $jsonValue('stats', 'stats', ['name', 'value', 'value_label']) }}</textarea>
+            </label>
+            <label class="grid gap-2 text-sm text-stone-300 lg:col-span-2">Vinetas
+                <textarea name="vignettes" rows="8" class="rounded border-stone-700 bg-stone-900 font-mono text-xs">{{ $jsonValue('vignettes', 'vignettes', ['title', 'description', 'image_path']) }}</textarea>
+            </label>
+        </div>
     </section>
     <section class="arcane-card rounded-lg p-5 lg:col-span-2">
         <h3 class="mb-4 font-semibold text-amber-200">Combate final y publicacion</h3>

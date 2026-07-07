@@ -8,7 +8,7 @@ class PublicEntryController extends Controller
 {
     public function show(string $slug)
     {
-        $entry = BestiaryEntry::with(['dossierTheme', 'subtitles', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes'])
+        $entry = BestiaryEntry::with(['dossierTheme', 'origin', 'subtitles', 'affinities', 'habitats', 'behaviors', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes'])
             ->where('slug', $slug)
             ->whereNotNull('published_at')
             ->firstOrFail();

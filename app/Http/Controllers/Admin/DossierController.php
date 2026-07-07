@@ -14,7 +14,7 @@ class DossierController extends Controller
     {
         $this->authorizeEntry($entry);
 
-        $entry->load(['dossierTheme', 'subtitles', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes']);
+        $entry->load(['dossierTheme', 'origin', 'subtitles', 'affinities', 'habitats', 'behaviors', 'abilities', 'techniques', 'weaknesses', 'loot', 'stats', 'vignettes', 'scholarNotes']);
 
         return view('admin.dossier', compact('entry'));
     }
