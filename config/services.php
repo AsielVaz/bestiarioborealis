@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'creature_ai' => [
+        'provider' => env('CREATURE_AI_PROVIDER', 'deepseek'),
+        'key' => env('DEEPSEEK_API_KEY'),
+        'model' => env('DEEPSEEK_MODEL', 'deepseek-chat'),
+        'endpoint' => env('DEEPSEEK_API_URL', 'https://api.deepseek.com/chat/completions'),
+    ],
+
 ];

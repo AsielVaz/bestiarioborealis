@@ -1,0 +1,15 @@
+{
+  "name": "Bestiary Ancient Dossier UI Asset Pack",
+  "description": "Transparent PNG overlays for ancient parchment / arcane bestiary sheets.",
+  "count": 70,
+  "categories": {
+    "corners": 12,
+    "dividers": 10,
+    "seals": 12,
+    "symbols": 12,
+    "panel_frames": 8,
+    "borders": 8,
+    "markers": 8
+  },
+  "format": "PNG RGBA transparent background"
+}

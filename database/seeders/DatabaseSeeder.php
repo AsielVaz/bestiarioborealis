@@ -3,23 +3,31 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        foreach (['admin', 'editor', 'viewer'] as $role) {
+            Role::findOrCreate($role);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $user = User::updateOrCreate([
+            'email' => 'admin@bestiarioborealis.test',
+        ], [
+            'name' => 'Bestiario Admin',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+
+        $user->assignRole('admin');
+
+        $this->call([
+            DossierThemeSeeder::class,
+            BestiaryEntrySeeder::class,
         ]);
     }
 }
