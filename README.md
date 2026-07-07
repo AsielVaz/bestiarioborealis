@@ -66,6 +66,10 @@ Rutas principales:
 
 Todas las rutas usan `auth:sanctum`.
 
+Base esperada en produccion:
+
+`https://bestiarioborealis.lat/bestiario/api`
+
 - `GET /api/entries`
 - `POST /api/entries`
 - `GET /api/entries/{id}`
@@ -75,6 +79,14 @@ Todas las rutas usan `auth:sanctum`.
 - `POST /api/import-json`
 - `POST /api/generate-creature`
 - `GET /api/entries/{id}/export-json`
+
+## API movil y sincronizacion
+
+El manual pegable para el equipo del app movil esta en:
+
+`docs/mobile-sync-api-prompt.md`
+
+Incluye registro/login por token, verificacion por `account_id + creature_uid`, diff de criaturas locales/remotas y upsert desde el dispositivo.
 
 ## Tests
 
