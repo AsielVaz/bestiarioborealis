@@ -11,8 +11,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('layouts.partials.assets')
     </head>
     <body class="arcane-shell font-sans text-stone-100 antialiased">
         <div class="arcane-main flex min-h-screen flex-col items-center px-4 pt-8 sm:justify-center sm:pt-0">

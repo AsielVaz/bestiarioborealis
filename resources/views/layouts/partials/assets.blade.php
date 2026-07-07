@@ -1,0 +1,113 @@
+@if (file_exists(public_path('build/manifest.json')))
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@else
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+        .arcane-shell {
+            position: relative;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at top left, rgba(214, 173, 96, 0.14), transparent 28rem),
+                radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.08), transparent 30rem),
+                #0c0a09;
+        }
+        .arcane-shell::before,
+        .arcane-shell::after {
+            content: "";
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.22;
+            background-repeat: no-repeat;
+            background-size: contain;
+            filter: drop-shadow(0 0 18px rgba(214, 173, 96, 0.16));
+        }
+        .arcane-shell::before {
+            top: 5rem;
+            left: 1rem;
+            width: 13rem;
+            height: 13rem;
+            background-image: url("{{ asset('bestiary-assets/corner_tl_compass.png') }}");
+        }
+        .arcane-shell::after {
+            right: 1rem;
+            bottom: 1rem;
+            width: 14rem;
+            height: 14rem;
+            background-image: url("{{ asset('bestiary-assets/corner_br_moon.png') }}");
+        }
+        .arcane-main {
+            position: relative;
+            z-index: 1;
+        }
+        .arcane-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(214, 173, 96, 0.22);
+            background:
+                linear-gradient(135deg, rgba(28, 25, 23, 0.96), rgba(12, 10, 9, 0.98)),
+                #0c0a09;
+            box-shadow: inset 0 1px 0 rgba(255, 247, 237, 0.05), 0 18px 50px rgba(0, 0, 0, 0.28);
+        }
+        .arcane-card::after {
+            content: "";
+            position: absolute;
+            right: -2.5rem;
+            top: -2.5rem;
+            width: 9rem;
+            height: 9rem;
+            pointer-events: none;
+            opacity: 0.08;
+            background: url("{{ asset('bestiary-assets/seal_round_03.png') }}") center / contain no-repeat;
+        }
+        .arcane-divider {
+            height: 2rem;
+            margin: 0.75rem 0;
+            background: url("{{ asset('bestiary-assets/divider_04.png') }}") center / contain no-repeat;
+            opacity: 0.72;
+        }
+        .arcane-marker {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .arcane-marker::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.15rem;
+            width: 1rem;
+            height: 1rem;
+            background: url("{{ asset('bestiary-assets/marker_03.png') }}") center / contain no-repeat;
+        }
+        .dossier-sheet {
+            position: relative;
+            overflow: hidden;
+        }
+        .dossier-sheet::before,
+        .dossier-sheet::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+            background-repeat: no-repeat;
+            background-size: contain;
+            opacity: 0.36;
+        }
+        .dossier-sheet::before {
+            top: 0.8rem;
+            left: 0.8rem;
+            width: 7rem;
+            height: 7rem;
+            background-image: url("{{ asset('bestiary-assets/corner_tl_eye.png') }}");
+        }
+        .dossier-sheet::after {
+            right: 1rem;
+            bottom: 1rem;
+            width: 8rem;
+            height: 8rem;
+            background-image: url("{{ asset('bestiary-assets/seal_square_04.png') }}");
+            opacity: 0.18;
+        }
+    </style>
+@endif

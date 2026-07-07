@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $entry->title }} / Bestiario Borealis</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts.partials.assets')
 </head>
 <body class="arcane-shell min-h-screen p-6 text-stone-100">
     @php($theme = $entry->dossierTheme)
